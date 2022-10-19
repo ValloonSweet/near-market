@@ -78,6 +78,9 @@ pub(crate) fn assert_at_least_one_yocto() {
     )
 }
 
+pub(crate) fn royalty_to_payout(royalty_percentage: u32, amount_to_pay: Balance) -> U128 {
+    U128(royalty_percentage as u128 * amount_to_pay / 10_000u128)
+}
 impl Contract {
 
     // remove token from an owner
@@ -185,7 +188,8 @@ impl Contract {
             owner_id: receiver_id.clone(),
             // reset the approval account IDs
             approved_account_ids: Default::default(),
-            next_approval_id: token.next_approval_id
+            next_approval_id: token.next_approval_id,
+            royalty: token.royalty.clone()
         };
 
         // insert that new token into the tokens_by_id, replacing the old entry
