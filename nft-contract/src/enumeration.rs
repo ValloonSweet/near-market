@@ -11,7 +11,7 @@ impl Contract {
     // Query for nft tokens on the contract regardless of the owner using pagination
     pub fn nft_tokens(&self, from_index: Option<U128>, limit: Option<u64>) -> Vec<JsonToken> {
         // where to start pagination - if we have a from_index, we'll use that - otherwise start from 0 index
-        let start = u128::from(from_index.unwarp_or(U128(0)));
+        let start = u128::from(from_index.unwrap_or(U128(0)));
 
         // iterate through each token using an iterator
         self.token_metadata_by_id.keys()
