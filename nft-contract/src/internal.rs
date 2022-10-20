@@ -200,6 +200,29 @@ impl Contract {
             env::log_str(&format!("Memo: {}", memo).to_string());
         }
 
+        // Default the authorized ID to be None for the logs.
+        let mut authorized_id = None;
+
+        // If the approval ID was provided, set the authorized ID equal to the sender
+        if approval_id.is_some() {
+            authorized_id = Some(sender_id.to_string());
+        }
+
+        // Transfer log
+        let nft_transfer_log: EventLog = EventLog {
+            standard: NFT_STANDARD_NAME.to_string(),
+            version: NFT_METADATA_SPEC.to_string(),
+            event: EventLogVariant::NftTransfer(vec![NftTransferLog {
+                authorized_id,
+                old_owner_id: token.owner_id.to_string(),
+                new_owner_id: receiver_id.to_string(),
+                token_ids: vec![token_id.to_string()],
+                memo
+            }]),
+        };
+
+        env::log_str(&nft_transfer_log.to_string());
+
         // return the previous token object that was transferred
         token
 

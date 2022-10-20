@@ -48,6 +48,25 @@ impl Contract {
         // call the internal method for adding the token to the owner
         self.internal_add_token_to_owner(&token.owner_id, &token_id);
 
+        // Construct the mint log as per the events standard
+        let nft_mint_log: EventLog = EventLog {
+            // Standard name
+            standard: NFT_STANDARD_NAME.to_string(),
+            // version of the standard
+            version: NFT_METADATA_SPEC.to_string(),
+            //The data related with the event stored in a vector
+            event: EventLogVariant::NftMint(vec![NftMintLog {
+                // owner
+                owner_id: token.owner_id.to_string(),
+                // token id vector
+                token_ids: vec![token_id.to_string()],
+                // memo to include
+                memo: None
+            }]),
+        };
+
+        env::log_str(&nft_mint_log.to_string());
+
         // calculate the required storage which was the used - initial
         let required_storage_in_bytes = env::storage_usage() - initial_storage_usage;
 
