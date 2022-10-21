@@ -196,7 +196,7 @@ impl Contract {
         self.tokens_by_id.insert(token_id, &new_token);
 
         // if there was some memo attached, we log it.
-        if let Some(memo) = memo {
+        if let Some(memo) = memo.as_ref() {
             env::log_str(&format!("Memo: {}", memo).to_string());
         }
 

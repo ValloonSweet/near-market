@@ -113,7 +113,7 @@ impl NonFungibleTokenCore for Contract {
         let sender_id = env::predecessor_account_id();
 
         // transfer the token and get the prevous token object
-        let previous_token = self.internal_transfer(&sender_id, &receiver_id, &token_id, approval_id, memo);
+        let previous_token = self.internal_transfer(&sender_id, &receiver_id, &token_id, approval_id, memo.clone());
 
         let mut authorized_id = None;
 
@@ -178,7 +178,8 @@ impl NonFungibleTokenResolver for Contract {
         owner_id: AccountId,
         receiver_id: AccountId,
         token_id: TokenId,
-        approved_account_ids: HashMap<AccountId, u64>
+        approved_account_ids: HashMap<AccountId, u64>,
+        memo: Option<String>
     ) -> bool {
         // Whether receiver wants to returntoken back to the sender, based on `nft_on_transfer`
         // call result
@@ -222,9 +223,9 @@ impl NonFungibleTokenResolver for Contract {
         self.internal_add_token_to_owner(&owner_id, &token_id);
 
         // we change the token struct's owner to be the original owner
-        token.owner_id = owner_id;
+        token.owner_id = owner_id.clone();
 
-        refund_approved_account_ids(receiver_id, &approved_account_ids);
+        refund_approved_account_ids(receiver_id.clone(), &approved_account_ids);
         token.approved_account_ids = approved_account_ids;
 
         // we insert the token back into the tokens_by_id collection
